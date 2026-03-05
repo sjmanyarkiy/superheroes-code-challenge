@@ -39,6 +39,7 @@ class Power(db.Model, SerializerMixin):
     hero_powers = db.relationship('HeroPower', back_populates='power', cascade='all, delete-orphan')
 
     # add serialization rules
+    serialize_rules = ('-hero_powers.power',)
 
     # add validation
 
