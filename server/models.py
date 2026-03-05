@@ -42,6 +42,11 @@ class Power(db.Model, SerializerMixin):
     serialize_rules = ('-hero_powers.power',)
 
     # add validation
+    validates('description')
+    def validate_description(self, value):
+        if not value or len(value):
+            raise ValueError("Description must be at least 20 characters long")
+        return value
 
     def __repr__(self):
         return f'<Power {self.id}>'
