@@ -33,6 +33,19 @@ def get_heroes():
 
     return make_response(body, 200)
 
+@app.route('/heroes/<int:id>')
+def get_hero_by_id(id):
+    hero = Hero.query.filter(Hero.id == id).first()
+
+    if hero:
+        body = hero.to_dict()
+        status = 200
+    else:
+        body = {'error' : 'Hero not found'}
+        status = 404
+
+    return make_response(body, status)
+
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
