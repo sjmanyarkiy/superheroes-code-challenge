@@ -55,5 +55,11 @@ def get_powers():
 
     return make_response(body, 200)
 
+@app.route('/powers/<int:id>')
+def get_powers_by_id(id):
+    power = Power.query.filter(Power.id == id).first()
+    
+     
+
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
