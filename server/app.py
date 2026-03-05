@@ -46,6 +46,14 @@ def get_hero_by_id(id):
 
     return make_response(body, status)
 
+@app.route('/powers')
+def get_powers():
+    powers = Power.query.all()
+    
+    body = [power.to_dict() for power in powers]
+
+
+    return make_response(body, 200)
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
