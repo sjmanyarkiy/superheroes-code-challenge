@@ -58,8 +58,19 @@ def get_powers():
 @app.route('/powers/<int:id>')
 def get_powers_by_id(id):
     power = Power.query.filter(Power.id == id).first()
-    
-     
+
+    if power:
+        body = power.to_dict()
+        status = 200
+    else:
+        body = {'error' : 'Power not found'}
+        status = 404
+
+    return make_response(body, status)
+
+@app.route('/powers/<int:id>', method = ['PATCH'])
+def update_powers(id):
+    power = Power.query.filter(Power.id == id).all()
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
