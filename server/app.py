@@ -95,6 +95,28 @@ def update_powers(id):
 
         except ValueError as e:
             return make_response({'errors': ["validation errors"]}, 400)
+        
+
+@app.route('/hero_powers', methods = ['POST'])
+def add_powers():
+    try:
+        data = request.get_json()
+        hero_power = HeroPower(
+            strength = data['strength'],
+            power_id = data['power_id'],
+            hero_id = data['hero_id']
+        )
+        db.session.add(hero_power)
+        db.session.commit()
+
+        return make_response(hero_power.to_dict(), 200)
+    
+    except ValueError as e:
+        return make_response({'errors' : ["validation errors"]}, 400)
+    
+
+
+
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
