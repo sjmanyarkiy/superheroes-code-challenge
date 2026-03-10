@@ -28,7 +28,7 @@ def get_heroes():
 
     heroes = Hero.query.all()
     
-    body = [hero.to_dict() for hero in heroes]
+    body = [hero.to_dict(only=('id', 'name', 'super_name')) for hero in heroes]
 
 
     return make_response(body, 200)
@@ -55,22 +55,46 @@ def get_powers():
 
     return make_response(body, 200)
 
-@app.route('/powers/<int:id>')
-def get_powers_by_id(id):
+# @app.route('/powers/<int:id>')
+# def get_powers_by_id(id):
+#     power = Power.query.filter(Power.id == id).first()
+
+#     if power:
+#         body = power.to_dict()
+#         status = 200
+#     else:
+#         body = {'error' : 'Power not found'}
+#         status = 404
+
+#     return make_response(body, status)
+
+@app.route('/powers/<int:id>', methods = ['GET', 'PATCH'])
+def update_powers(id):
     power = Power.query.filter(Power.id == id).first()
 
-    if power:
-        body = power.to_dict()
-        status = 200
-    else:
-        body = {'error' : 'Power not found'}
-        status = 404
+    if power is None:
+        response_body = {'error': 'Power not found'}
+        return make_response(response_body, 404)
 
-    return make_response(body, status)
+    if request.method == 'GET':
+        power_dict = power.to_dict()
+        response = make_response(power_dict, 200)
+        return response
 
-@app.route('/powers/<int:id>', method = ['PATCH'])
-def update_powers(id):
-    power = Power.query.filter(Power.id == id).all()
+    elif request.method == 'PATCH':
+        try:
+            data = request.get_json()
+            for attr in data:
+                setattr(power, attr, data[attr])
+
+            db.session.add(power)
+            db.session.commit()
+
+            response = make_response(power.to_dict(), 200)
+            return response
+
+        except ValueError as e:
+            return make_response({'errors': [str(e)]}, 400)
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
