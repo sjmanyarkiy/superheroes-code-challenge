@@ -43,7 +43,7 @@ class Power(db.Model, SerializerMixin):
 
     # add validation
     @validates('description')
-    def validate_description(self, value):
+    def validate_description(self, key, value):
         if not value or len(value) < 20:
             raise ValueError("Description must be at least 20 characters long")
         return value
@@ -69,7 +69,7 @@ class HeroPower(db.Model, SerializerMixin):
 
     # add validation
     @validates('strength')
-    def validate_strength(self, value):
+    def validate_strength(self, key, value):
         valid_strengths = ['Strong', 'Weak', 'Average']
         if value not in valid_strengths:
             raise ValueError(f"Strength must be one of {valid_strengths}")

@@ -50,7 +50,7 @@ def get_hero_by_id(id):
 def get_powers():
     powers = Power.query.all()
     
-    body = [power.to_dict() for power in powers]
+    body = [power.to_dict(only=('id', 'name', 'description')) for power in powers]
 
 
     return make_response(body, 200)
@@ -77,7 +77,7 @@ def update_powers(id):
         return make_response(response_body, 404)
 
     if request.method == 'GET':
-        power_dict = power.to_dict()
+        power_dict = power.to_dict(only=('id', 'name', 'description'))
         response = make_response(power_dict, 200)
         return response
 
@@ -94,7 +94,7 @@ def update_powers(id):
             return response
 
         except ValueError as e:
-            return make_response({'errors': [str(e)]}, 400)
+            return make_response({'errors': ["validation errors"]}, 400)
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
